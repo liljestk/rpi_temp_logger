@@ -3,6 +3,8 @@
 May be uesd for wirelessly logging temperature and humidity data. The connection between sender and reciever is not encrypted or in any way regulated, so new devices may be added
 without any additional configuration. This does however mean that multiple systems of this setup may interfere with one another as the reciever will pick up any sender within range.
 
+![grafana example](https://github.com/liljestk/rpi_temp_logger/blob/main/images/grafana_example.png)
+
 ## Docker and Docker-Compose Required 
 
 ## Based on the following open-source repositories
