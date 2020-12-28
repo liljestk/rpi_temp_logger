@@ -1,7 +1,6 @@
 # Raspberry Pi based wireless temperature and humidity logger
 
-May be uesd for wirelessly logging temperature and humidity data. The connection between sender and reciever is not encrypted or in any way regulated, so new devices may be added
-without any additional configuration. This does however mean that multiple systems of this setup may interfere with one another as the reciever will pick up any sender within range.
+To be used for wirelessly logging temperature and humidity data. The connection between sender and receiver is not encrypted or in any way regulated; new devices may be added without any additional configuration. This does however mean that multiple systems of this setup may interfere with one another as the receiver will pick up any sender within range.
 
 ![grafana example](https://github.com/liljestk/rpi_temp_logger/blob/main/images/grafana_example.png)
 
@@ -12,16 +11,17 @@ without any additional configuration. This does however mean that multiple syste
 - https://github.com/aquaticus/nexus433
 
 ## Setup
-1. Clone the repository
-2. Rename the .env_template as .env
-3. Edit the .env file (add passwords etc.)
-4. CD into the directory
-5. Run "sudo chown -R 472:472 data/" to set permissions for Grafana
-6. Run docker-compose up -d --build
+1. Check HW setup on https://github.com/aquaticus/nexus433
+2. Clone the repository
+3. Rename the .env_template as .env
+4. Edit the .env file (add passwords etc.)
+5. CD into the directory
+6. Run "sudo chown -R 472:472 data/" to set permissions for Grafana
+7. Run docker-compose up -d --build
 
 ## Services
 ### Bridge
-- Runs the nexus433 service that listenes on 433MHz senders
+- Runs the nexus433 service that listens on 433MHz senders
 ### MQTT
 - Mosquitto service the relay the 433MHz sender messages
 ### Listener
