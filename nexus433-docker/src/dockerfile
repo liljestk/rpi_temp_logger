@@ -1,0 +1,27 @@
+FROM debian
+
+USER root
+
+RUN apt-get -yqq update
+RUN apt-get -yqq install cmake libmosquittopp-dev
+RUN apt-get -yqq install git autoconf pkg-config libtool autoconf-archive
+RUN apt-get -yqq install build-essential
+
+RUN git clone git://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git /var/libgpio
+WORKDIR /var/libgpio
+RUN git checkout v1.4.2 -b v1.4.2
+RUN ./autogen.sh --enable-tools=yes && make && make install && ldconfig
+RUN git clone https://github.com/aquaticus/nexus433 /var/nexus433
+RUN mkdir /var/release
+WORKDIR /var/release
+RUN sed -i '1s/^/set( BOARD "RASPBERRYPI")\n/' /var/nexus433/board.cmake
+RUN cmake /var/nexus433 -DCMAKE_BUILD_TYPE=RELEASE
+RUN make && make install
+
+COPY nexus433.ini /etc/nexus433.ini
+
+COPY cmd.sh /var/nexus433/cmd.sh
+RUN chmod +x /var/nexus433/cmd.sh
+CMD /var/nexus433/cmd.sh
+
+

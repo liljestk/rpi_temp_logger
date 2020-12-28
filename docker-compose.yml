@@ -1,0 +1,107 @@
+version: '3'
+
+services:
+    bridge:
+        build: ./nexus433-docker/src/
+        devices:
+            - "/dev/gpiochip0:/dev/gpiochip0"
+        depends_on:
+            - mqtt
+        environment:
+            - MQTT_SERVER=mqtt
+        restart: unless-stopped
+
+    mqtt:
+        image: eclipse-mosquitto
+        ports:
+            - 1883:1883
+        restart: unless-stopped
+    
+    db:
+        image: tobi312/rpi-mariadb
+        restart: unless-stopped
+        volumes:
+            - ./db/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+            - db_data:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD:${MYSQL_ROOT_PASSWORD}
+        env_file:
+            - .env
+
+    adminer:
+        image: adminer
+        restart: unless-stopped
+        ports:
+            - 8081:8080
+
+    listener:
+        build: 
+          context: .
+          dockerfile: ./listener/Dockerfile
+        restart: unless-stopped
+        environment:
+            - "TZ=Europe/Helsinki"
+        volumes:
+            - ./listener/:/listener/
+            - /listener/node_modules
+        depends_on:
+            - mqtt
+            - bridge
+            - db
+
+    renamer:
+        build: 
+            context: .
+            dockerfile: ./device-renamer/Dockerfile
+        restart: unless-stopped
+        ports:
+            - 8080:80
+            - 8443:443
+        volumes: 
+            - ./device-renamer/src/:/var/www/html/
+
+    samba:
+        image: dperson/samba
+        environment:
+            TZ: 'EST2EDT'
+        networks:
+            - default
+        ports:
+            - "137:137/udp"
+            - "138:138/udp"
+            - "139:139/tcp"
+            - "445:445/tcp"
+        read_only: true
+        tmpfs:
+            - /tmp
+        restart: unless-stopped
+        stdin_open: true
+        tty: true
+        volumes:
+            - ./listener/data/:/mnt:z
+        command: '-s "Pelles_temp;/mnt;yes;yes"'
+
+    grafana:
+        image: grafana/grafana:latest
+        container_name: monitoring_grafana
+        restart: unless-stopped
+        ports:
+            - 3000:3000
+        links:
+            - db:db
+        volumes:
+            - ./data/grafana:/var/lib/grafana
+        environment:
+            - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+            - GF_USERS_ALLOW_SIGN_UP=${GF_USERS_ALLOW_SIGN_UP}
+            - GF_SERVER_DOMAIN=${GF_SERVER_DOMAIN}
+            - GF_SMTP_ENABLED=${GF_SMTP_ENABLED}
+            - GF_SMTP_HOST=${GF_SMTP_HOST}
+            - GF_SMTP_USER=${GF_SMTP_USER}
+            - GF_SMTP_PASSWORD=${GF_SMTP_PASSWORD}
+            - GF_SMTP_FROM_ADDRESS=${GF_SMTP_FROM_ADDRESS}
+        env_file:
+            - .env
+
+volumes:
+    db_data:
