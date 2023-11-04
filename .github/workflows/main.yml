@@ -13,6 +13,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Copy Example .env
+        run: cp .env_template .env
+
+      - name: Set Environment Variables
+        run: |
+          echo "GF_SECURITY_ADMIN_PASSWORD=$GF_SECURITY_ADMIN_PASSWORD" >> .env
+          echo "GF_SMTP_PASSWORD=$GF_SMTP_PASSWORD" >> .env
+          echo "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" >> .env
+
       - name: Set up Docker Compose
         run: |
           sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
