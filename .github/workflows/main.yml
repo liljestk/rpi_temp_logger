@@ -11,10 +11,15 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Build Docker Image
-        run: docker build -t your_docker_image ../../.
+        run: docker-compose -f docker-compose.yml build
 
   build_bootable_image:
     runs-on: ubuntu-latest
