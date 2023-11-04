@@ -3,7 +3,7 @@ name: Build Docker Image and Create Bootable Image
 on:
   push:
     branches:
-      - main
+      - packer
 
 jobs:
   build_docker_image:
