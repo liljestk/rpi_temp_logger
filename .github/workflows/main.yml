@@ -1,0 +1,21 @@
+name: Create Bootable Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@v1
+
+      - name: Build Bootable Image
+        run: |
+          packer build packer.json
