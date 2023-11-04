@@ -22,4 +22,19 @@
       ]
     }
   ]
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "output/{{.BuildName}}.json"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "curl -X POST \
+        -H 'Authorization: token ${PACKER_PAT}' \
+        -d \'{\"tag_name\":\"v1.0.0\",\"target_commitish\":\"packer\",\"name\":\"Release v1.0.0\",\"body\":\"Release notes\",\"draft\":false,\"prerelease\":false}\' \
+        https://api.github.com/repos/liljestk/rpi_temp_logger/releases"
+      ]
+    }
+  ]
 }
