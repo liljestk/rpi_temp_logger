@@ -16,7 +16,7 @@
         "systemctl enable docker",
         "apt-get install -y docker-compose",
         "docker-compose --version",
-        "git clone -b packer https://github.com/liljestk/rpi_temp_logger.git /app",  // Replace with your Git repo
+        "git clone -b packer https://github.com/liljestk/rpi_temp_logger.git /app", 
         "cd /app",
         "docker-compose up -d"
       ]
