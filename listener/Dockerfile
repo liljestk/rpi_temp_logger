@@ -1,4 +1,4 @@
-FROM node:15
+FROM node:21
 
 RUN apt-get update
 
@@ -8,7 +8,7 @@ WORKDIR /listener
 
 COPY /listener/package-lock.json ./
 
-RUN npm install --quiet
+RUN npm install --quiet mqtt fs mysql
 
 COPY . .
 
