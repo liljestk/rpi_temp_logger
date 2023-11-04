@@ -16,6 +16,9 @@ jobs:
       - name: Copy Example .env
         run: cp .env_template .env
 
+      - name: Set up QEMU
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
       - name: Set Environment Variables
         run: |
           echo "GF_SECURITY_ADMIN_PASSWORD=$GF_SECURITY_ADMIN_PASSWORD" >> .env
