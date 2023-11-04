@@ -2,25 +2,24 @@
   "builders": [
     {
       "type": "docker",
-      "image": "your_docker_image",
-      "commit": true,
-      "changes": ["CMD [\"/bin/sh\", \"-c\", \"while true; do sleep 1; done\"]"]
-    },
-    {
-      "type": "qemu",
-      "format": "qcow2",
-      "accelerator": "kvm",
-      "source_path": "docker",
-      "ssh_username": "username",
-      "ssh_password": "password",
-      "output_directory": "output_directory",
-      "vm_name": "vm_name"
+      "image": "arm32v7/debian:bullseye",
+      "commit": true
     }
   ],
   "provisioners": [
     {
       "type": "shell",
-      "inline": ["apt-get update", "apt-get install -y your_packages"]
+      "inline": [
+        "apt-get update",
+        "apt-get install -y docker.io",
+        "systemctl start docker",
+        "systemctl enable docker",
+        "apt-get install -y docker-compose",
+        "docker-compose --version",
+        "git clone -b packer https://github.com/liljestk/rpi_temp_logger.git /app", 
+        "cd /app",
+        "docker-compose up -d"
+      ]
     }
   ]
 }
