@@ -1,0 +1,26 @@
+{
+  "builders": [
+    {
+      "type": "docker",
+      "image": "your_docker_image",
+      "commit": true,
+      "changes": ["CMD [\"/bin/sh\", \"-c\", \"while true; do sleep 1; done\"]"]
+    },
+    {
+      "type": "qemu",
+      "format": "qcow2",
+      "accelerator": "kvm",
+      "source_path": "docker",
+      "ssh_username": "username",
+      "ssh_password": "password",
+      "output_directory": "output_directory",
+      "vm_name": "vm_name"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": ["apt-get update", "apt-get install -y your_packages"]
+    }
+  ]
+}
